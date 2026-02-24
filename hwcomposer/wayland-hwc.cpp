@@ -155,6 +155,18 @@ void choose_width_height(struct display* display, int32_t hint_width, int32_t hi
     display->height = height;
 }
 
+void choose_refresh(struct display* display, int32_t hint_refresh) {
+    char property[PROPERTY_VALUE_MAX];
+    int refresh = hint_refresh;
+
+    if (property_get("persist.waydroid.fps", property, nullptr) > 0) {
+        // property в Hz, конвертируем в mHz как у wl_output
+        refresh = atoi(property) * 1000;
+    }
+
+    display->refresh = std::max(display->refresh, refresh);
+}
+
 void
 finished_calibrating(struct display *d)
 {
@@ -1392,8 +1404,8 @@ output_handle_mode(void *data, struct wl_output *,
                    int32_t refresh)
 {
     struct display *d = (struct display *)data;
-    d->refresh = std::max(d->refresh, refresh);
-
+    // d->refresh = std::max(d->refresh, refresh);
+    choose_refresh(d, refresh)
     // Fallback size
     // We can't do anything meaningful if there's more than one display, just pick one at random
     // Hopefully these won't need to be used
