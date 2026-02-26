@@ -1405,7 +1405,7 @@ output_handle_mode(void *data, struct wl_output *,
 {
     struct display *d = (struct display *)data;
     // d->refresh = std::max(d->refresh, refresh);
-    choose_refresh(d, refresh)
+    choose_refresh(d, refresh);
     // Fallback size
     // We can't do anything meaningful if there's more than one display, just pick one at random
     // Hopefully these won't need to be used
